@@ -39,7 +39,7 @@ BaseApp.prototype.init = function(container) {
 
 BaseApp.prototype.createRenderer = function() {
     this.renderer = new THREE.WebGLRenderer( {antialias : true});
-    this.renderer.setClearColor(0xb7b7b7, 1.0);
+    this.renderer.setClearColor(0x000000, 1.0);
     this.renderer.shadowMapEnabled = true;
     var isMSIE = /*@cc_on!@*/0;
 
@@ -129,21 +129,20 @@ BaseApp.prototype.windowResize = function(event) {
 BaseApp.prototype.createScene = function() {
     this.scene = new THREE.Scene();
 
-    var ambientLight = new THREE.AmbientLight(0x383838);
+    var ambientLight = new THREE.AmbientLight(0x000000);
     this.scene.add(ambientLight);
 
-
+    /*
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(-1000, 100, 5000);
     spotLight.intensity = 1;
     this.scene.add(spotLight);
+    */
 
 
-    /*
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
     directionalLight.position.set( 1, 1, 1 );
     this.scene.add( directionalLight );
-    */
 
     /*
     var pointLight = new THREE.PointLight(0xffffff);
@@ -156,7 +155,7 @@ BaseApp.prototype.createScene = function() {
 BaseApp.prototype.createCamera = function() {
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000 );
-    this.camera.position.set(-15, 0, 13 );
+    this.camera.position.set(0, 0, 20 );
 
     console.log('dom =', this.renderer.domElement);
 };
@@ -175,7 +174,7 @@ BaseApp.prototype.createControls = function() {
 
     this.controls.keys = [ 65, 83, 68 ];
 
-    var lookAt = new THREE.Vector3(19, -2, -14);
+    var lookAt = new THREE.Vector3(0, 0, 0);
     this.controls.setLookAt(lookAt);
 };
 

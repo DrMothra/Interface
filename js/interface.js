@@ -13,6 +13,10 @@ Interface.prototype = new BaseApp();
 
 Interface.prototype.init = function(container) {
     BaseApp.prototype.init.call(this, container);
+    this.halfWidth = window.innerWidth/2;
+    this.halfHeight = window.innerHeight/2;
+    this.xRotScale = Math.PI/4;
+    this.yRotScale = Math.PI/8;
 };
 
 Interface.prototype.createScene = function() {
@@ -21,13 +25,16 @@ Interface.prototype.createScene = function() {
 
     //Load desired model
     this.modelLoader = new THREE.OBJMTLLoader();
+    this.model = null;
     var _this = this;
 
 
-    this.modelLoader.load( 'models/pumpkin.obj', '', function ( object ) {
+    this.modelLoader.load( 'models/pumpkin.obj', 'models/pumpkin.mtl', function ( object ) {
 
         _this.scene.add( object );
-        object.rotation.y = 1.25 * Math.PI;
+        _this.model = object;
+        object.rotation.y = -Math.PI/2;
+        object.position.set(0, 0, 0);
         _this.loadedModel = object;
 
     } );
@@ -35,6 +42,11 @@ Interface.prototype.createScene = function() {
 
 Interface.prototype.update = function() {
     BaseApp.prototype.update.call(this);
+
+    if(this.model) {
+        this.model.rotation.y = -Math.PI/2 + ((this.mouse.endX - this.halfWidth)*this.xRotScale)/this.halfWidth;
+        this.model.rotation.x = ((this.mouse.endY - this.halfHeight)*this.yRotScale)/this.halfHeight;
+    }
 };
 
 $(document).ready(function() {
