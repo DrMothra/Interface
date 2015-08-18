@@ -15,6 +15,9 @@ function Interface() {
 Interface.prototype = new BaseApp();
 
 Interface.prototype.init = function(container, gui) {
+    this.xRot = 0;
+    this.yRot = 0;
+    this.checkTime = 100;
     BaseApp.prototype.init.call(this, container, gui);
 };
 
@@ -40,6 +43,42 @@ Interface.prototype.createScene = function() {
 
 Interface.prototype.update = function() {
     BaseApp.prototype.update.call(this);
+};
+
+Interface.prototype.repeat = function(direction) {
+    if(direction === undefined) {
+        clearInterval(this.repeatTimer);
+        return;
+    }
+    var _this = this;
+    switch(direction) {
+        case ROT_LEFT:
+            _this.xRot = 0;
+            _this.yRot = -ROT_INC;
+            break;
+
+        case ROT_RIGHT:
+            _this.xRot = 0;
+            _this.yRot = ROT_INC;
+            break;
+
+        case ROT_UP:
+            _this.xRot = -ROT_INC;
+            _this.yRot = 0;
+            break;
+
+        case ROT_DOWN:
+            _this.xRot = ROT_INC;
+            _this.yRot = 0;
+            break;
+
+        default:
+            break;
+    }
+    this.repeatTimer = setInterval(function() {
+        _this.loadedModel.rotation.x += _this.xRot;
+        _this.loadedModel.rotation.y += _this.yRot;
+    }, this.checkTime);
 };
 
 /*
@@ -75,15 +114,19 @@ Interface.prototype.rotateObject = function(direction) {
         switch(direction) {
             case ROT_LEFT:
                 this.loadedModel.rotation.y -= ROT_INC;
+                this.repeat(ROT_LEFT);
                 break;
             case ROT_RIGHT:
                 this.loadedModel.rotation.y += ROT_INC;
+                this.repeat(ROT_RIGHT);
                 break;
             case ROT_UP:
                 this.loadedModel.rotation.x -= ROT_INC;
+                this.repeat(ROT_UP);
                 break;
             case ROT_DOWN:
                 this.loadedModel.rotation.x += ROT_INC;
+                this.repeat(ROT_DOWN);
                 break;
             default:
                 break;
@@ -117,21 +160,20 @@ $(document).ready(function() {
     app.createScene();
 
     //GUI callbacks
-
-    $('#rotateLeft').on("click", function() {
+    $('#rotateLeft').on("mousedown", function() {
         app.rotateObject(ROT_LEFT);
     });
-
-    $('#rotateRight').on("click", function() {
+    $('#rotateRight').on("mousedown", function() {
         app.rotateObject(ROT_RIGHT);
     });
-
-    $('#rotateUp').on("click", function() {
+    $('#rotateUp').on("mousedown", function() {
         app.rotateObject(ROT_UP);
     });
-
-    $('#rotateDown').on("click", function() {
+    $('#rotateDown').on("mousedown", function() {
         app.rotateObject(ROT_DOWN);
+    });
+    $("[id^=rotate]").on("mouseup", function() {
+        app.repeat();
     });
 
     $('#zoomOut').on("click", function() {

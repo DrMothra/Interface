@@ -22,8 +22,6 @@ function BaseApp() {
     this.clock = new THREE.Clock();
     this.clock.start();
     this.objectsPicked = false;
-    this.intervalTimer = null;
-    this.checkTime = 100;
 }
 
 BaseApp.prototype.init = function(container, guiContainer) {
@@ -53,16 +51,6 @@ BaseApp.prototype.createRenderer = function() {
     this.renderer.setSize(width, window.innerHeight);
     this.container.appendChild( this.renderer.domElement );
     var _this = this;
-
-    this.guiContainer.addEventListener('mousedown', function(event) {
-        _this.mouseClicked(event);
-    }, false);
-    this.guiContainer.addEventListener('mouseup', function(event) {
-        _this.mouseClicked(event);
-    }, false);
-    this.guiContainer.addEventListener('mousemove', function(event) {
-        _this.mouseMoved(event);
-    }, false);
 
     window.addEventListener('keydown', function(event) {
         _this.keydown(event);
@@ -106,14 +94,7 @@ BaseApp.prototype.mouseClicked = function(event) {
         this.mouse.endY = event.clientY;
         this.mouse.down = false;
         this.objectsPicked = false;
-        clearInterval(this.intervalTimer);
         return;
-    }
-    var _this = this;
-    if(event.type === "mousedown") {
-        this.intervalTimer = setInterval(function() {
-            _this.buttonRepeat();
-        }, this.checkTime);
     }
 
     this.mouse.startX = (event.clientX / window.innerWidth) * 2 - 1;
@@ -123,12 +104,6 @@ BaseApp.prototype.mouseClicked = function(event) {
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     this.pickedObjects = this.raycaster.intersectObjects(this.scene.children, true);
-};
-
-BaseApp.prototype.mouseMoved = function(event) {
-    //Update mouse state
-    this.mouse.endX = event.clientX;
-    this.mouse.endY = event.clientY;
 };
 
 BaseApp.prototype.windowResize = function(event) {
