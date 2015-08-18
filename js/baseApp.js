@@ -22,15 +22,17 @@ function BaseApp() {
     this.clock = new THREE.Clock();
     this.clock.start();
     this.objectsPicked = false;
+    this.intervalTimer = null;
+    this.checkTime = 100;
 }
 
-BaseApp.prototype.init = function(container) {
+BaseApp.prototype.init = function(container, guiContainer) {
     this.container = container;
+    this.guiContainer = guiContainer;
     console.log("BaseApp container =", container);
     this.createRenderer();
     console.log("BaseApp renderer =", this.renderer);
     this.createCamera();
-    this.createControls();
     this.raycaster = new THREE.Raycaster();
     //this.stats = initStats();
     this.statsShowing = true;
@@ -39,7 +41,7 @@ BaseApp.prototype.init = function(container) {
 
 BaseApp.prototype.createRenderer = function() {
     this.renderer = new THREE.WebGLRenderer( {antialias : true});
-    this.renderer.setClearColor(0x000000, 1.0);
+    this.renderer.setClearColor(0x474747, 1.0);
     this.renderer.shadowMapEnabled = true;
     var isMSIE = /*@cc_on!@*/0;
 
@@ -52,13 +54,13 @@ BaseApp.prototype.createRenderer = function() {
     this.container.appendChild( this.renderer.domElement );
     var _this = this;
 
-    this.container.addEventListener('mousedown', function(event) {
+    this.guiContainer.addEventListener('mousedown', function(event) {
         _this.mouseClicked(event);
     }, false);
-    this.container.addEventListener('mouseup', function(event) {
+    this.guiContainer.addEventListener('mouseup', function(event) {
         _this.mouseClicked(event);
     }, false);
-    this.container.addEventListener('mousemove', function(event) {
+    this.guiContainer.addEventListener('mousemove', function(event) {
         _this.mouseMoved(event);
     }, false);
 
@@ -69,6 +71,10 @@ BaseApp.prototype.createRenderer = function() {
     window.addEventListener('resize', function(event) {
         _this.windowResize(event);
     }, false);
+};
+
+BaseApp.prototype.buttonRepeat = function() {
+
 };
 
 BaseApp.prototype.keydown = function(event) {
@@ -100,8 +106,16 @@ BaseApp.prototype.mouseClicked = function(event) {
         this.mouse.endY = event.clientY;
         this.mouse.down = false;
         this.objectsPicked = false;
+        clearInterval(this.intervalTimer);
         return;
     }
+    var _this = this;
+    if(event.type === "mousedown") {
+        this.intervalTimer = setInterval(function() {
+            _this.buttonRepeat();
+        }, this.checkTime);
+    }
+
     this.mouse.startX = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.startY = (event.clientY / window.innerHeight) * 2 + 1;
     this.mouse.down = true;
@@ -155,32 +169,14 @@ BaseApp.prototype.createScene = function() {
 BaseApp.prototype.createCamera = function() {
 
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000 );
-    this.camera.position.set(0, 0, 20 );
+    this.camera.position.set(0, 0, 40 );
 
     console.log('dom =', this.renderer.domElement);
 };
 
-BaseApp.prototype.createControls = function() {
-    this.controls = new THREE.TrackballControls(this.camera, this.container);
-    this.controls.rotateSpeed = 1.0;
-    this.controls.zoomSpeed = 1.0;
-    this.controls.panSpeed = 1.0;
-
-    this.controls.noZoom = false;
-    this.controls.noPan = false;
-
-    this.controls.staticMoving = true;
-    this.controls.dynamicDampingFactor = 0.3;
-
-    this.controls.keys = [ 65, 83, 68 ];
-
-    var lookAt = new THREE.Vector3(0, 0, 0);
-    this.controls.setLookAt(lookAt);
-};
-
 BaseApp.prototype.update = function() {
     //Do any updates
-    this.controls.update();
+
 };
 
 BaseApp.prototype.run = function() {

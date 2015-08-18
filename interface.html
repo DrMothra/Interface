@@ -8,7 +8,6 @@
 
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="js/three71.js"></script>
-    <script type="text/javascript" src="js/TrackballControls.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/baseApp.js?v=0.2"></script>
     <script type="text/javascript" src="js/MTLLoader.js"></script>
@@ -22,6 +21,23 @@
 </head>
 <body>
 
+<div id="buttonControls">
+    <div id="rotateAround">
+        <p>Rotate</p>
+        <button id="rotateLeft" type="button" class="btn btn-default">Left</button>
+        <button id="rotateRight" type="button" class="btn btn-default">Right</button>
+    </div>
+    <div id="rotateUpDown">
+        <p>Rotate</p>
+        <button id="rotateDown" type="button" class="btn btn-default">Down</button>
+        <button id="rotateUp" type="button" class="btn btn-default">Up</button>
+    </div>
+    <div id="zoom">
+        <p>Zoom</p>
+        <button id="zoomOut" type="button" class="btn btn-default">Out</button>
+        <button id="zoomIn" type="button" class="btn btn-default">In</button>
+    </div>
+</div>
 <div id="WebGL-output">
 
 </div>

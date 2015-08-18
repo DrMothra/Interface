@@ -1,2 +1,14 @@
 /* Styles for interface app */
 
+/* Main page */
+#buttonControls {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    background-color: gray;
+    border-radius: 15px;
+}
+#buttonControls p {
+    color: #ffffff;
+    text-align: center;
+}
