@@ -5,8 +5,7 @@
 
 var ROT_INC = Math.PI/32;
 var MOVE_INC = 5;
-var ROT_LEFT=0, ROT_RIGHT=1, ROT_UP=2, ROT_DOWN=3;
-var ZOOM_IN=0, ZOOM_OUT=1;
+var ROT_LEFT=0, ROT_RIGHT=1, ROT_UP=2, ROT_DOWN= 3, ZOOM_IN=4, ZOOM_OUT=5;
 //Init this app from base
 function Interface() {
     BaseApp.call(this);
@@ -17,7 +16,9 @@ Interface.prototype = new BaseApp();
 Interface.prototype.init = function(container, gui) {
     this.xRot = 0;
     this.yRot = 0;
+    this.zTrans = 0;
     this.checkTime = 100;
+    this.rotating = false;
     BaseApp.prototype.init.call(this, container, gui);
 };
 
@@ -55,29 +56,48 @@ Interface.prototype.repeat = function(direction) {
         case ROT_LEFT:
             _this.xRot = 0;
             _this.yRot = -ROT_INC;
+            _this.rotating = true;
             break;
 
         case ROT_RIGHT:
             _this.xRot = 0;
             _this.yRot = ROT_INC;
+            _this.rotating = true;
             break;
 
         case ROT_UP:
             _this.xRot = -ROT_INC;
             _this.yRot = 0;
+            _this.rotating = true;
             break;
 
         case ROT_DOWN:
             _this.xRot = ROT_INC;
             _this.yRot = 0;
+            _this.rotating = true;
+            break;
+
+        case ZOOM_IN:
+            _this.zTrans = MOVE_INC;
+            _this.rotating = false;
+            break;
+
+        case ZOOM_OUT:
+            _this.zTrans = -MOVE_INC;
+            _this.rotating = false;
             break;
 
         default:
             break;
     }
     this.repeatTimer = setInterval(function() {
-        _this.loadedModel.rotation.x += _this.xRot;
-        _this.loadedModel.rotation.y += _this.yRot;
+        if(_this.rotating) {
+            _this.loadedModel.rotation.x += _this.xRot;
+            _this.loadedModel.rotation.y += _this.yRot;
+        } else {
+            _this.loadedModel.position.z += _this.zTrans;
+        }
+
     }, this.checkTime);
 };
 
@@ -141,9 +161,11 @@ Interface.prototype.translateObject = function(direction) {
         switch(direction) {
             case ZOOM_IN:
                 this.loadedModel.position.z += MOVE_INC;
+                this.repeat(ZOOM_IN);
                 break;
             case ZOOM_OUT:
                 this.loadedModel.position.z -= MOVE_INC;
+                this.repeat(ZOOM_OUT);
                 break;
             default:
                 break;
@@ -176,12 +198,15 @@ $(document).ready(function() {
         app.repeat();
     });
 
-    $('#zoomOut').on("click", function() {
+    $('#zoomOut').on("mousedown", function() {
         app.translateObject(ZOOM_OUT);
     });
 
-    $('#zoomIn').on("click", function() {
+    $('#zoomIn').on("mousedown", function() {
         app.translateObject(ZOOM_IN);
+    });
+    $("[id^=zoom]").on("mouseup", function() {
+        app.repeat();
     });
 
     app.run();
