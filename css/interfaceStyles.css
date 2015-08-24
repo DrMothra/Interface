@@ -5,14 +5,45 @@
     overflow: hidden;
     margin: 0;
 }
+#rotateAround,
+#zoom {
+    margin-top: 2%;
+}
+#infoPanel {
+    position: absolute;
+    width: 20%;
+    top: 5%;
+    left: 5%;
+    background-color: gray;
+    border-radius: 15px;
+    padding: 0.5% 2%;
+}
+#infoPanel h1 {
+    color: #914900;
+}
+#infoPanel p {
+    color: #d98d22;
+}
 #buttonControls {
     position: absolute;
+    width: 10%;
     top: 5%;
     right: 5%;
     background-color: gray;
     border-radius: 15px;
+    text-align: center;
+}
+#buttonControls div {
+    margin-bottom: 3%;
 }
 #buttonControls p {
-    color: #ffffff;
+    color: #d98d22;
     text-align: center;
+}
+#buttonControls button {
+    width: 30%;
+    padding: 1% 0;
+}
+#buttonControls img {
+    width: 50%;
 }

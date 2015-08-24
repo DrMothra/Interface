@@ -6,6 +6,7 @@
 var ROT_INC = Math.PI/32;
 var MOVE_INC = 5;
 var ROT_LEFT=0, ROT_RIGHT=1, ROT_UP=2, ROT_DOWN= 3, ZOOM_IN=4, ZOOM_OUT=5;
+var CAM_Z = 40;
 //Init this app from base
 function Interface() {
     BaseApp.call(this);
@@ -19,6 +20,8 @@ Interface.prototype.init = function(container, gui) {
     this.zTrans = 0;
     this.checkTime = 100;
     this.rotating = false;
+    this.autoRotate = false;
+    this.wireframe = false;
     BaseApp.prototype.init.call(this, container, gui);
 };
 
@@ -42,7 +45,26 @@ Interface.prototype.createScene = function() {
     } );
 };
 
+Interface.prototype.resetScene = function() {
+    //Reset all controls
+    if(this.loadedModel) {
+        this.loadedModel.rotation.x = this.loadedModel.rotation.y = 0;
+        this.loadedModel.position.z = 0;
+        this.autoRotate = false;
+        $("#rotateCheck").prop("checked", false);
+        if(this.wireframe) {
+            this.wireframe = false;
+            $("#wireCheck").prop("checked", false);
+            this.setWireframe(this.wireframe);
+        }
+    }
+};
+
 Interface.prototype.update = function() {
+    if(this.loadedModel && this.autoRotate) {
+        this.loadedModel.rotation.y += ROT_INC/8;
+    }
+
     BaseApp.prototype.update.call(this);
 };
 
@@ -133,10 +155,12 @@ Interface.prototype.rotateObject = function(direction) {
         this.rotateDirection = direction;
         switch(direction) {
             case ROT_LEFT:
+                if(this.autoRotate) return;
                 this.loadedModel.rotation.y -= ROT_INC;
                 this.repeat(ROT_LEFT);
                 break;
             case ROT_RIGHT:
+                if(this.autoRotate) return;
                 this.loadedModel.rotation.y += ROT_INC;
                 this.repeat(ROT_RIGHT);
                 break;
@@ -170,6 +194,21 @@ Interface.prototype.translateObject = function(direction) {
             default:
                 break;
         }
+    }
+};
+
+Interface.prototype.setAutoRotate = function(rotate) {
+    this.autoRotate = rotate;
+};
+
+Interface.prototype.setWireframe = function(wireframe) {
+    if(this.loadedModel) {
+        this.wireframe = wireframe;
+        this.loadedModel.traverse( function(child) {
+            if(child instanceof THREE.Mesh) {
+                child.material.wireframe = wireframe;
+            }
+        })
     }
 };
 
@@ -209,5 +248,15 @@ $(document).ready(function() {
         app.repeat();
     });
 
+    $("#rotateCheck").on("change", function() {
+        app.setAutoRotate(this.checked);
+    });
+    $("#wireCheck").on("change", function() {
+        app.setWireframe(this.checked);
+    });
+
+    $("#reset").on("click", function() {
+        app.resetScene();
+    });
     app.run();
 });
