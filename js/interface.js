@@ -41,6 +41,7 @@ Interface.prototype.createScene = function() {
         _this.model = object;
         object.position.set(0, 0, 0);
         _this.loadedModel = object;
+        $('#progress').hide();
 
     } );
 };

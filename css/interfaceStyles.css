@@ -47,3 +47,13 @@
 #buttonControls img {
     width: 50%;
 }
+#progress {
+    position: absolute;
+    top: 45%;
+    left: 40%;
+    background-color: gray;
+    border-radius: 15px;
+    padding: 1% 2%;
+    color: #914900;
+    font-size: 1.4vw;
+}
